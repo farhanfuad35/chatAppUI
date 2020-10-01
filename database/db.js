@@ -6,7 +6,8 @@ const pgp = require('pg-promise')();    // Never ever forget to add extra parent
 console.log('db.js initialized');
 
 const dbConfig = config.get('dbConfig');
-const db = pgp('postgres://farhan:password@localhost:5432/kathak');
+//const db = pgp('postgres://farhan:password@localhost:5432/kathak');
+const db = pgp(dbConfig);
 console.log('Database connected!');
 
 module.exports = db;

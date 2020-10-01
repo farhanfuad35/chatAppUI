@@ -186,21 +186,30 @@ signUpForm.addEventListener('submit', (e) => {
             },
             method: 'POST',
             body: JSON.stringify(userInfo)
-        }).then(res => {console.log(res); console.log('POST:auth/signup sent');})
-        .catch('Well some error happened');
+        }).then(res => {
+            console.log(res);
+            console.log('POST:auth/signup sent');
+            if(res.status != 400){
+                setTimeout(()=>{
 
-        setTimeout(()=>{
+                    document.getElementById('signUpBtnText').classList.remove('hide');
+                    document.getElementById('signUpBtnIcon').classList.add('hide');
+                    signedIn.classList.remove('hide');
+                    signedOut.classList.add('hide');
+                    signUpForm.reset();
+            
+                    localStorage.setItem("auth", "signedIn");
+                    changeUI("signedUp");
+        
+                }, 3000);
+            }
+        })
+        .catch(() => {
+            console.log('Error Occured');
+            signUpForm.querySelector('.error').innerHTML = 'Signup failed!';
+        });
 
-            document.getElementById('signUpBtnText').classList.remove('hide');
-            document.getElementById('signUpBtnIcon').classList.add('hide');
-            signedIn.classList.remove('hide');
-            signedOut.classList.add('hide');
-            signUpForm.reset();
-    
-            localStorage.setItem("auth", "signedIn");
-            changeUI("signedUp");
 
-        }, 3000);
 
         // Handle Error
         // document.getElementById('signUpBtnText').classList.remove('hide');
@@ -229,25 +238,33 @@ signInForm.addEventListener('submit', (e) => {
         },
         method: 'POST',
         body: JSON.stringify(userInfo)
-    }).then(res => console.log(res))
+    }).then( (res) => {
+        console.log(res);
+        if(res.status != 400){
+            console.log('status code 400');
+            document.getElementById('signInBtnText').classList.add('hide');
+            document.getElementById('signInBtnIcon').classList.remove('hide');
+
+            setTimeout(()=>{
+
+                document.getElementById('signInBtnText').classList.remove('hide');
+                document.getElementById('signInBtnIcon').classList.add('hide');
+                signedIn.classList.remove('hide');
+                signedOut.classList.add('hide');
+                signInForm.reset();
+            
+                localStorage.setItem("auth", "signedIn");
+                changeUI("signedIn");
+
+            }, 3000);
+        }
+        else{
+            console.log('status code not 400');
+        }
+
+    })
     .catch('Well some error happened');
 
-
-    document.getElementById('signInBtnText').classList.add('hide');
-    document.getElementById('signInBtnIcon').classList.remove('hide');
-
-    setTimeout(()=>{
-
-        document.getElementById('signInBtnText').classList.remove('hide');
-        document.getElementById('signInBtnIcon').classList.add('hide');
-        signedIn.classList.remove('hide');
-        signedOut.classList.add('hide');
-        signInForm.reset();
-    
-        localStorage.setItem("auth", "signedIn");
-        changeUI("signedIn");
-
-    }, 3000);
 
     // Handle Error
     // document.getElementById('signInBtnText').classList.remove('hide');
