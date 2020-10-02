@@ -316,6 +316,43 @@ function changeUI(status){
     }
 }
 
+// ### AUTHENTICATE USER ###
+(function authenticateToken(){
+    fetch('/auth/authenticate', {
+        credentials: "same-origin",
+        method: 'GET'
+    }).then(async (res) => {
+        if(res.status == 200){
+            console.log('status code 200');
+            document.getElementById('signInBtnText').classList.add('hide');
+            document.getElementById('signInBtnIcon').classList.remove('hide');
+            //var response = await res.json();
+            //const accessToken = response.accessToken;
+
+            //setTimeout(()=>{
+
+                document.getElementById('signInBtnText').classList.remove('hide');
+                document.getElementById('signInBtnIcon').classList.add('hide');
+                signedIn.classList.remove('hide');
+                signedOut.classList.add('hide');
+                signInForm.reset();
+            
+                //localStorage.setItem("auth", "signedIn");
+                //localStorage.setItem("accessToken", accessToken);
+                changeUI("signedIn");
+
+            //}, 3000);
+        }
+        else{
+            console.log('status code not 400');
+        }
+
+    })
+    .catch((err)=>{
+        console.log('Some error occured: ' + err);
+    });
+})()
+
 function signedInUI() {
     document.getElementById('profileName').innerHTML = "you@life.com";
     signedIn.classList.remove('hide');

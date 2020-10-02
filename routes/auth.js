@@ -8,6 +8,7 @@ const route = express.Router();
 const saltRounds = 10;
 const db = require('../database/db');
 const dbOp = require('../database/operation');
+const { nextTick } = require('process');
 
 console.log('auth.js initialized');
 
@@ -63,4 +64,46 @@ route.post('/signup', (req, res) => {
     }
 });
 
-module.exports = route;
+
+route.get('/authenticate', (req, res, next) => {
+    authenticateToken(req, res);
+    return;
+})
+
+
+// ### AUTHENTICATE TOKEN ###
+// --------------------------
+
+
+// Authentication function
+// This function will be used as a middleware of the app.get('/'). It will check if an user is already logged in
+// If received authorization token is verified, it will 
+async function authenticateToken(req, res){
+    console.log('I have come to authenticate token');
+    try{
+        const token = await req.cookies.accessToken;
+        if(token){
+            jwt.verify(token, jwtConfig.ACCESS_TOKEN, (err, user) => {
+                if(err){ 
+                    console.log('Token did not match');
+                    return res.status(403).sendFile(path.join(__dirname, '..', 'public', 'home.html'));
+                }
+                else{
+                    console.log('Token matched');
+                    req.user = user;
+                    return res.status(200).sendFile(path.join(__dirname, '..', 'public', 'home.html'));
+                }
+            });
+        }
+        else{ 
+            console.log('Token was not found');
+            return res.status(401).sendFile(path.join(__dirname, '..', 'public', 'home.html'));
+        }
+    }catch{(err) => {
+        console.log('Error occured ' + err);
+        res.status(401);
+    }};
+}
+
+module.exports.route = route;
+module.exports.authenticateToken = authenticateToken;
