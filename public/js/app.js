@@ -238,14 +238,15 @@ signInForm.addEventListener('submit', (e) => {
         },
         method: 'POST',
         body: JSON.stringify(userInfo)
-    }).then( (res) => {
-        console.log(res);
+    }).then(async (res) => {
         if(res.status != 400){
-            console.log('status code 400');
+            console.log('status code not 400');
             document.getElementById('signInBtnText').classList.add('hide');
             document.getElementById('signInBtnIcon').classList.remove('hide');
+            var response = await res.json();
+            const accessToken = response.accessToken;
 
-            setTimeout(()=>{
+            //setTimeout(()=>{
 
                 document.getElementById('signInBtnText').classList.remove('hide');
                 document.getElementById('signInBtnIcon').classList.add('hide');
@@ -254,16 +255,19 @@ signInForm.addEventListener('submit', (e) => {
                 signInForm.reset();
             
                 localStorage.setItem("auth", "signedIn");
+                //localStorage.setItem("accessToken", accessToken);
                 changeUI("signedIn");
 
-            }, 3000);
+            //}, 3000);
         }
         else{
             console.log('status code not 400');
         }
 
     })
-    .catch('Well some error happened');
+    .catch((err)=>{
+        console.log('Some error occured: ' + err);
+    });
 
 
     // Handle Error
@@ -990,4 +994,7 @@ function openConversation(conversationId, email) {
     document.getElementById('conversationTitle').innerHTML = email;
     document.querySelector("#messagesDiv").innerHTML = "";
     chatOn = true;
+
+
+    
 }
